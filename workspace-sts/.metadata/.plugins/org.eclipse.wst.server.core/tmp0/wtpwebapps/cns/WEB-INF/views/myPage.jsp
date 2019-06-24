@@ -42,7 +42,7 @@
 			<img class="mr-3" src="img/user.png" alt="" width="48" height="48">
 			<div class="lh-100">
 				<h6 class="mb-0 text-white lh-100">MyPage</h6>
-				<small>test@test.com</small>
+				<a class="mb-0 text-white lh-100" href="/alert/logout"><small>·Î±×¾Æ¿ô</small></a>
 			</div>
 		</div>
 

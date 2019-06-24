@@ -2,29 +2,30 @@
 <section name="Workbench">
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog">
 		<item value="false" key="isRegEx"/>
-		<item value=".do" key="selection"/>
+		<item value="tag" key="selection"/>
 		<item value="false" key="casesensitive"/>
 		<item value="false" key="incremental"/>
 		<item value="true" key="wrap"/>
 		<item value="false" key="wholeword"/>
 		<list key="findhistory">
-			<item value=".do"/>
-			<item value=".html"/>
-			<item value="yonhap"/>
-			<item value=".htm"/>
-			<item value="html"/>
-			<item value="&#x09;  &lt;!-- Bootstrap core JavaScript --&gt;"/>
-			<item value="카테고리"/>
-			<item value="조선"/>
-			<item value="mypage"/>
-			<item value="mypa"/>
-			<item value="mypage.html"/>
-			<item value="정치"/>
-			<item value="타임라인"/>
 			<item value="tag"/>
-			<item value="com.spring.sample"/>
+			<item value="취업"/>
+			<item value="&lt;c:"/>
+			<item value="logout"/>
+			<item value="login"/>
+			<item value="log"/>
+			<item value="service"/>
+			<item value="httpSession"/>
+			<item value="loginPost"/>
+			<item value="userVO"/>
+			<item value="user"/>
+			<item value="getUser_id"/>
+			<item value="use"/>
+			<item value="userVo"/>
+			<item value="getTag"/>
 		</list>
 		<list key="replacehistory">
+			<item value=" "/>
 			<item value=".do"/>
 			<item value="myPage.do"/>
 			<item value="myPaage.do"/>

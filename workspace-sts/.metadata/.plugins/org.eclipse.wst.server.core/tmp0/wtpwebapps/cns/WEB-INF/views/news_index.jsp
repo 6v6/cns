@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=EUC-KR"
 	pageEncoding="EUC-KR"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-
+<!DOCTYPE html>
 <html>
 <head>
 
@@ -12,24 +12,32 @@
 <meta name="author" content="">
 
 <!-- Bootstrap core CSS -->
-<link href="/resources/vendor/bootstrap/css/bootstrap.min.css"
-	rel="stylesheet">
+<link href="/resources/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 
 <!-- Custom styles for this template -->
 <link href="/resources/css/modern-business.css" rel="stylesheet">
 <link href="/resources/css/ij-css.css" rel="stylesheet">
+
+<!-- Custom styles for this template -->
+<link href="/resources/css/sb-admin-2.min.css" rel="stylesheet">
+
+<!-- Custom styles for this page -->
+<link href="/resources/vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
+
 <title>QuadCore News</title>
 
 </head>
 
-<body>
+<body id="page-top">
 
 	<!-- Navigation -->
 	<!--nav class에 원래 bg-dark있음 -->
 	<nav class="navbar fixed-top navbar-expand-lg navbar-dark fixed-top"
 		style="background-color: #A566FF">
 		<div class="container">
-			<a class="navbar-brand" href="#"  onClick="top.location='javascript:location.reload()'">QuadCore News</a>
+			<a class="navbar-brand" href="#"
+				onClick="top.location='javascript:location.reload()'">QuadCore
+				News</a>
 			<button class="navbar-toggler navbar-toggler-right" type="button"
 				data-toggle="collapse" data-target="#navbarResponsive"
 				aria-controls="navbarResponsive" aria-expanded="false"
@@ -38,10 +46,13 @@
 			</button>
 			<div class="collapse navbar-collapse" id="navbarResponsive">
 				<ul class="navbar-nav ml-auto">
-					<li class="nav-item"><img style="margin-top: 5px"
-						src="resources/img/user.png"></li>
-					<li class="nav-item"><a class="nav-link" href="login.do">User1</a>
-					</li>
+					<li class="nav-item"><img style="margin-top: 5px" src="resources/img/user.png"></li>
+					<c:if test="${not empty login}">
+					<li class="nav-item"><a class="nav-link" id="login-state" href="myPage">${login.email}</a></li>
+					</c:if>
+					<c:if test="${ empty login}">
+					<li class="nav-item"><a class="nav-link" id="login-state" href="login.do">Sign in</a>
+					</li></c:if>
 				</ul>
 			</div>
 		</div>
@@ -109,8 +120,8 @@
 				<div class="carousel-item"
 					style="background-image: url('https://imgnews.pstatic.net/image/001/2019/01/24/PYH2019012406210005700_P2_20190124125957738.jpg?type=w647')">
 					<div class="carousel-caption d-none d-md-block">
-						<a href="news.do" style="color: white"><h3>'3년 전 불났는데
-								또…' 화마 부른 울산농수산물시장 안전불감증</h3></a>
+						<a href="news.do" style="color: white"><h3>'3년 전 불났는데 또…'
+								화마 부른 울산농수산물시장 안전불감증</h3></a>
 						<p>이전·재건축 논의만 10년째 되풀이…노후 건물 화재에 더 취약해져</p>
 					</div>
 				</div>
@@ -136,44 +147,106 @@
 		</div>
 	</header>
 
-	<c:forEach items="${newsList}" var="news">
-		<!-- Page Content -->
-		<div class="container">
-			<!-- Project One -->
-			<div class="row" style="margin-top: 50px">
-				<div class="col-md-4">
-					<a href="#"> <img class="img-fluid rounded mb-3 mb-md-0"
-						src="http://www.ifm.kr/wp-content/uploads/2018/11/iHY5e-660x330.jpg"
-						alt="">
-					</a>
-				</div>
-				<div class="col-md-7">
-					<a href="#" style="color: black"><h4>${news.news_title}</h4></a>
-					<p>${news.summarize}</p>
-					<!--a class="btn btn-primary" href="#">View Project
-            <span class="glyphicon glyphicon-chevron-right"></span>
-          </a-->
-				</div>
+	<div class="container" style="margin-top: 50px">
+	
+	
+	<!-- Project One -->
+			<c:forEach items="${newsList}" var="news">
+		<div class="row">
+			<div class="col-md-4">
+				<a href="#"> <img class="img-fluid rounded mb-3 mb-md-0" src="${news.image}" alt=""></a>
 			</div>
-			<!-- /.row -->
-			<hr>
+			<div class="col-md-7">
+				<a class='move' href="<c:out value='${news.news_id}'/>", style="color: black"><h4>${news.news_title}</h4></a>
+				<p>【요약뉴스】${news.summarize}</p>
+			</div>
 		</div>
-	</c:forEach>
+		<hr/>
+		</c:forEach>
+		<!-- /.row -->
+	
+	
+	<div class='pull-right'>
+			<ul class="pagination justify-content-center">
+						<c:if test="${pageMaker.prev}">
+							<li class="page-item">
+							<a class="page-link"  href="${pageMaker.startPage -1}">Previous</a></li>
+						</c:if>
+
+						<c:forEach var="num" begin="${pageMaker.startPage}" end="${pageMaker.endPage}">
+							<li class="page-item">
+								<a class="page-link"  href="${num}">${num}</a>
+							</li>
+						</c:forEach>
+
+						<c:if test="${pageMaker.next}">
+							<li class="page-item"><a class="page-link" 
+								href="${pageMaker.endPage +1 }">Next</a></li>
+						</c:if>
+					</ul>
+				</div>
+				<!--  end Pagination -->
+	</div>
+	
+		
+
+	
+	<!-- /.container -->
+	
+	<form id='actionForm' action="/" method='get'>
+				<input type='hidden' name='pageNum' value='${pageMaker.cri.pageNum}'>
+				<input type='hidden' name='amount' value='${pageMaker.cri.amount}'>
+	</form>
 	<!-- /.container -->
 
 	<!-- Footer -->
-	<footer class="py-5 bg-dark">
+	<footer class="py-5 bg-dark" style="margin-top: 50px">
 		<div class="container">
-			<p class="m-0 text-center text-white">Copyright &copy; Quad-Core
-				2018</p>
+			<p class="m-0 text-center text-white">Copyright &copy; Quad-Core 2018</p>
 		</div>
 		<!-- /.container -->
 	</footer>
+
 
 	<!-- Bootstrap core JavaScript -->
 	<script src="/resources/vendor/jquery/jquery.min.js"></script>
 	<script src="/resources/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 
+	<!-- Core plugin JavaScript-->
+	<script src="/resources/vendor/jquery-easing/jquery.easing.min.js"></script>
+
+	
+
 </body>
+
+
+<script type="text/javascript">
+	$(document)
+			.ready(
+					function() {
+						var actionForm = $("#actionForm");
+					/* 	var result = "<c:out value='${result}'/>";
+						if(result === '')
+							$("#login-state").html("signIn")
+						else
+							$("#login-state").html(result) */
+						
+						$(".page-item a").on("click",function(e) {
+								e.preventDefault();
+								console.log('click');
+								actionForm.find("input[name='pageNum']").val($(this).attr("href"));
+								//actionForm.find("input[name='offset']").val($(this).attr("href"));
+								actionForm.submit();
+								});
+
+						$(".move").on("click",function(e) {
+							e.preventDefault();
+							actionForm.append("<input type='hidden' name='news_id' value='"+ $(this).attr("href")+ "'>");
+							actionForm.attr("action","/news");
+							actionForm.submit();
+							});
+						
+					});
+</script>
 
 </html>

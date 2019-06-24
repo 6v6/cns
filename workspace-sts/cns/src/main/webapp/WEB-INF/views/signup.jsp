@@ -6,8 +6,7 @@
 <head>
 
 <meta charset="utf-8">
-<meta name="viewport"
-	content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="description" content="">
 <meta name="author" content="">
 
@@ -37,16 +36,16 @@
 			</div>
 
 			<!-- Login Form -->
-			<form>
+			<form role="form" action="/signup" method="post">
 				<input type="text" id="login" class="fadeIn second" name="email" placeholder="Your Email">
 				<select name="gender" id="gender" class="fadeIn third">
 							<option selected>Female</option>
 							<option>male</option>
 				</select>
-				<input class="fadeIn third" type="text" placeholder="Date of Birth" name="birthday">
+				<input class="fadeIn third" type="date" placeholder="Date of Birth" name="date_of_birth">
 				<i class="zmdi zmdi-calendar-note input-icon js-btn-calendar"></i>
-				<input type="text" id="password" class="fadeIn third" name="login" placeholder="Password">
-				<input type="text" id="password" class="fadeIn third" name="login" placeholder="Repeat Your Password">
+				<input type="text" id="password" class="fadeIn third" name="password" placeholder="Password">
+				<input type="text" id="password" class="fadeIn third" placeholder="Repeat Your Password">
 				<input type="submit" class="fadeIn fourth" value="Sign Up">
 			</form>
 

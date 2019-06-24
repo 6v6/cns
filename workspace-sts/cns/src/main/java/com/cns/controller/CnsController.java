@@ -4,15 +4,26 @@ import java.util.List;
 import java.util.Locale;
 
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.cns.dto.Criteria;
 import com.cns.dto.NewsVO;
+import com.cns.dto.PageDTO;
+import com.cns.dto.TagVO;
+import com.cns.dto.UserVO;
 import com.cns.service.NewsService;
 
 /**
@@ -30,87 +41,104 @@ public class CnsController {
 	 * Simply selects the home view to render by returning its name.
 	 */
 	@RequestMapping(value = "/", method = RequestMethod.GET)
-	public String home(Locale locale, Model model) throws Exception {
+	public String home(Criteria cri, Model model) throws Exception {
 
 		logger.info("news");
-
-		List<NewsVO> newsList = nservice.selectNews();
-
+		int total = nservice.getTotal("사회");
+		model.addAttribute("pageMaker", new PageDTO(cri,total));
+		List<NewsVO> newsList = nservice.getListWithPaging(cri);
 		model.addAttribute("newsList", newsList);
-		/*
-		 * List<MemberVO> memberList = service.selectMember();
-		 * 
-		 * model.addAttribute("memberList", memberList);
-		 */
+		
 
 		return "news_index";
 	}
 
 	@RequestMapping(value = "/tag", method = RequestMethod.GET)
-	public void tag(Locale locale, Model model) throws Exception {
+	public String tag( HttpSession httpSession, Model model) throws Exception {
 
 		logger.info("tag");
+		 Object object = httpSession.getAttribute("login");
+		    if (object != null) {
+		        UserVO userVO = (UserVO) object;
+		        List<TagVO> tagList = nservice.getUserTag(userVO);
+		        List<NewsVO> newsList = nservice.getUserTagNews(userVO);
+				model.addAttribute("tagList", tagList);
+				model.addAttribute("newsList", newsList);
+				return "tag";
+				
+		    }
+		   
+			return "redirect:/alert/loginAlert";
+		    
 
-		// List<NewsVO> newsList = nservice.selectNews();
-
-		// model.addAttribute("newsList", newsList);
+		
 
 	}
+	
+	@GetMapping("/alert/loginAlert")
+	public void loginAlert(Model model) throws Exception {
 
+
+	}
+	
+	
 	@RequestMapping(value = "/category/politics", method = RequestMethod.GET)
-	public void politics(Locale locale, Model model) throws Exception {
+	public void politics(Criteria cri, Model model) throws Exception {
 
 		logger.info("politics");
 
-		// List<NewsVO> newsList = nservice.selectNews();
-
-		// model.addAttribute("newsList", newsList);
-
+		int total = nservice.getTotal("정치");
+		model.addAttribute("pageMaker", new PageDTO(cri,total));
+		List<NewsVO> newsList = nservice.selectPolitics(cri);
+		model.addAttribute("newsList", newsList);
 
 	}
 
 	@RequestMapping(value = "/category/economy", method = RequestMethod.GET)
-	public void economy(Locale locale, Model model) throws Exception {
+	public void economy(Criteria cri, Model model) throws Exception {
 
 		logger.info("economy");
 
-		// List<NewsVO> newsList = nservice.selectNews();
-
-		// model.addAttribute("newsList", newsList);
+		int total = nservice.getTotal("경제");
+		model.addAttribute("pageMaker", new PageDTO(cri,total));
+		List<NewsVO> newsList = nservice.selectEconomy(cri);
+		model.addAttribute("newsList", newsList);
 
 	}
 
 	@RequestMapping(value = "/category/living", method = RequestMethod.GET)
-	public void living(Locale locale, Model model) throws Exception {
+	public void living(Criteria cri, Model model) throws Exception {
 
 		logger.info("living");
 
-		// List<NewsVO> newsList = nservice.selectNews();
-
-		// model.addAttribute("newsList", newsList);
-
+		int total = nservice.getTotal("생활문화");
+		model.addAttribute("pageMaker", new PageDTO(cri,total));
+		List<NewsVO> newsList = nservice.selectLiving(cri);
+		model.addAttribute("newsList", newsList);
 
 	}
 
 	@RequestMapping(value = "/category/society", method = RequestMethod.GET)
-	public void society(Locale locale, Model model) throws Exception {
+	public void society(Criteria cri, Model model) throws Exception {
 
 		logger.info("society");
 
-		// List<NewsVO> newsList = nservice.selectNews();
-
-		// model.addAttribute("newsList", newsList);
+		int total = nservice.getTotal("사회");
+		model.addAttribute("pageMaker", new PageDTO(cri,total));
+		List<NewsVO> newsList = nservice.selectSociety(cri);
+		model.addAttribute("newsList", newsList);
 
 	}
 
 	@RequestMapping(value = "/category/itScience", method = RequestMethod.GET)
-	public void itScience(Locale locale, Model model) throws Exception {
+	public void itScience(Criteria cri, Model model) throws Exception {
 
 		logger.info("itScience");
 
-		// List<NewsVO> newsList = nservice.selectNews();
-
-		// model.addAttribute("newsList", newsList);
+		int total = nservice.getTotal("IT과학");
+		model.addAttribute("pageMaker", new PageDTO(cri,total));
+		List<NewsVO> newsList = nservice.selectIT(cri);
+		model.addAttribute("newsList", newsList);
 
 	}
 
@@ -126,80 +154,97 @@ public class CnsController {
 	}
 
 	@RequestMapping(value = "company/chosun", method = RequestMethod.GET)
-	public void chosun(Locale locale, Model model) throws Exception {
+	public void chosun(Criteria cri, Model model) throws Exception {
 
 		logger.info("chosun");
-
-		// List<NewsVO> newsList = nservice.selectNews();
-
-		// model.addAttribute("newsList", newsList);
+		int total = nservice.getTotalPress("조선일보");
+		cri.setPress("조선일보");
+		model.addAttribute("pageMaker", new PageDTO(cri,total));
+		List<NewsVO> newsList = nservice.selectPress(cri);
+		model.addAttribute("newsList", newsList);
 	}
 	
-	
+
 	@RequestMapping(value = "company/donga", method = RequestMethod.GET)
-	public void donga(Locale locale, Model model) throws Exception {
-
+	public void donga(Criteria cri, Model model) throws Exception {
 		logger.info("donga");
-
-		// List<NewsVO> newsList = nservice.selectNews();
-
-		// model.addAttribute("newsList", newsList);
+		int total = nservice.getTotalPress("동아일보");
+		cri.setPress("동아일보");
+		model.addAttribute("pageMaker", new PageDTO(cri,total));
+		List<NewsVO> newsList = nservice.selectPress(cri);
+		model.addAttribute("newsList", newsList);
 	}
-	
-	
+
 	@RequestMapping(value = "company/hankyoreh", method = RequestMethod.GET)
-	public void hankyoreh(Locale locale, Model model) throws Exception {
+	public void hankyoreh(Criteria cri, Model model) throws Exception {
 
 		logger.info("hankyoreh");
-
-		// List<NewsVO> newsList = nservice.selectNews();
-
-		// model.addAttribute("newsList", newsList);
+		int total = nservice.getTotalPress("한겨레");
+		cri.setPress("한겨레");
+		model.addAttribute("pageMaker", new PageDTO(cri,total));
+		List<NewsVO> newsList = nservice.selectPress(cri);
+		model.addAttribute("newsList", newsList);
 	}
-	
+
 	@RequestMapping(value = "company/joongang", method = RequestMethod.GET)
-	public void joongang(Locale locale, Model model) throws Exception {
+	public void joongang(Criteria cri, Model model) throws Exception {
 
 		logger.info("joongang");
 
-		// List<NewsVO> newsList = nservice.selectNews();
-
-		// model.addAttribute("newsList", newsList);
+		int total = nservice.getTotalPress("중앙일보");
+		cri.setPress("중앙일보");
+		model.addAttribute("pageMaker", new PageDTO(cri,total));
+		List<NewsVO> newsList = nservice.selectPress(cri);
+		model.addAttribute("newsList", newsList);
 	}
-	
+
 	@RequestMapping(value = "company/yonhap", method = RequestMethod.GET)
-	public void yonhap(Locale locale, Model model) throws Exception {
+	public void yonhap(Criteria cri, Model model) throws Exception {
 
 		logger.info("yonhap");
 
-		// List<NewsVO> newsList = nservice.selectNews();
-
-		// model.addAttribute("newsList", newsList);
+		int total = nservice.getTotalPress("연합뉴스");
+		cri.setPress("연합뉴스");
+		model.addAttribute("pageMaker", new PageDTO(cri,total));
+		List<NewsVO> newsList = nservice.selectPress(cri);
+		model.addAttribute("newsList", newsList);
 	}
-	
-	
+
 	@RequestMapping(value = "news", method = RequestMethod.GET)
-	public void news(Locale locale, Model model) throws Exception {
+	public String get(@RequestParam("news_id") Long news_id, Model model) throws Exception {
 
 		logger.info("news");
-
 		// List<NewsVO> newsList = nservice.selectNews();
-
-		// model.addAttribute("newsList", newsList);
+		model.addAttribute("news", nservice.getNews(news_id));
+		model.addAttribute("tags", nservice.getTag(news_id));
+		return "news";
 	}
 
 	@RequestMapping(value = "login", method = RequestMethod.GET)
 	public void login(Locale locale, Model model) throws Exception {
 
 		logger.info("login");
+		
+		
 
-		// List<NewsVO> newsList = nservice.selectNews();
-
-		// model.addAttribute("newsList", newsList);
 	}
 	
-
-	@RequestMapping(value = "signup", method = RequestMethod.GET)
+	
+	  @PostMapping("/alert/loginPost") 
+	  public void loginPost(UserVO user, RedirectAttributes rttr, Model model) throws Exception { 
+		  logger.info("loginPost");
+		  if(nservice.login(user)==100) {
+			 // rttr.addAttribute("result",user.getEmail());
+			  model.addAttribute("user", user);
+			  //return "redirect:/"; 
+		  }
+		  else //if(nservice.login(user)==200)
+			 // return "/alert/loginPost";
+			  return;
+	  
+	  }
+	 
+	@RequestMapping(value = "/signup", method = RequestMethod.GET)
 	public void signup(Locale locale, Model model) throws Exception {
 
 		logger.info("signup");
@@ -207,5 +252,36 @@ public class CnsController {
 		// List<NewsVO> newsList = nservice.selectNews();
 
 		// model.addAttribute("newsList", newsList);
+	}
+	
+	@PostMapping("/signup")
+	public String signupP(UserVO user, RedirectAttributes rttr) throws Exception {
+
+		logger.info("signup");
+		nservice.signUp(user);
+
+		// List<NewsVO> newsList = nservice.selectNews();
+
+		
+		return "redirect:/login";
+	}
+	
+	@RequestMapping(value = "/alert/logout", method = RequestMethod.GET)
+	public String logout(HttpServletRequest request, HttpServletResponse response, HttpSession httpSession) throws Exception {
+
+	    Object object = httpSession.getAttribute("login");
+	    if (object != null) {
+	        UserVO userVO = (UserVO) object;
+	        httpSession.removeAttribute("login");
+	        httpSession.invalidate();
+			/*
+			 * Cookie loginCookie = WebUtils.getCookie(request, "loginCookie"); if
+			 * (loginCookie != null) { loginCookie.setPath("/"); loginCookie.setMaxAge(0);
+			 * response.addCookie(loginCookie); userService.keepLogin(userVO.getUserId(),
+			 * "none", new Date()); }
+			 */
+	    }
+
+	    return "alert/logout";
 	}
 }
